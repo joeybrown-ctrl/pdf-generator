@@ -2,25 +2,22 @@ import { useRef, useState } from 'react';
 import './App.css';
 import '@progress/kendo-theme-material/dist/all.css';
 import { Button } from "@progress/kendo-react-buttons";
-import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
-import logo from './logo.png';
+import { PDFExport } from "@progress/kendo-react-pdf";
+// import logo from './logo.png';
 import sampleData from './invoice-data.json';
 import {
   Chart,
   ChartSeries,
   ChartSeriesItem,
   ChartSeriesLabels,
-  // ChartCategoryAxisItem,
-  // ChartTitle,
-  // ChartLegend
 } from "@progress/kendo-react-charts";
-import { DropDownList } from './@progress/kendo-react-dropdowns';
+import { DropDownList } from "@progress/kendo-react-dropdowns";
 
 
 function App() {
 
   const pdfExportComponent = useRef(null);
-  const [layoutSelection, setLayoutSelection] = useState();
+  const [layoutSelection, setLayoutSelection] = useState({ text: "A4", value: "size-a4"});
   const dData = [
     { text: "A4", value: "size-a4" }, 
     { text: "Letter", value: "size-letter" },
@@ -36,6 +33,10 @@ function App() {
   //   savePDF(contentArea.current, { paperSize: "A4" })
   // }
 
+  const updatePageLayout = (e) => {
+    setLayoutSelection(e.target.value);
+  }
+
   return (
     <div id="example">
 
@@ -47,6 +48,8 @@ function App() {
             data={dData}
             textField="text"
             dataItemKey="value"
+            value={layoutSelection}
+            onChange={updatePageLayout}
           >
 
           </DropDownList>
@@ -61,11 +64,11 @@ function App() {
       <div className="app-content">
         <div className="page-container hidden-on-narrow">
               <PDFExport ref={pdfExportComponent}>
-                <div>
+                <div className={ `pdf-page ${layoutSelection.value}` }>
                   <div className="inner-page">
                     <div className="pdf-header">
                       <span className="company-logo">
-                        <img src={logo} alt="Company Logo" /> Sweet Spot
+                        Sweet Spot
                       </span>
                       <span className="invoice-number">Invoice #777</span>
                     </div>
